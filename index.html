@@ -19,7 +19,7 @@
             var ean13Code = getUrlParameter('code');
 
             // コードが有効な長さかどうかを確認 (EAN-13は13桁)
-            if (ean13Code.length === 13) {
+            if (ean13Code.length === 13 && !isNaN(ean13Code)) {
                 // JsBarcodeを使用してバーコードを生成
                 JsBarcode("#barcode", ean13Code, {
                     format: "EAN13",
