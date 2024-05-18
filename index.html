@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EAN-13バーコード生成</title>
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.0/dist/JsBarcode.all.min.js"></script>
+    <script>
+        // URLパラメータを取得する関数
+        function getUrlParameter(name) {
+            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+            var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+            var results = regex.exec(location.search);
+            return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+        }
+
+        window.onload = function() {
+            // URLからコードを取得
+            var ean13Code = getUrlParameter('code');
+
+            // コードが有効な長さかどうかを確認 (EAN-13は13桁)
+            if (ean13Code.length === 13) {
+                // JsBarcodeを使用してバーコードを生成
+                JsBarcode("#barcode", ean13Code, {
+                    format: "EAN13",
+                    lineColor: "#000",
+                    width: 2,
+                    height: 100,
+                    displayValue: true
+                });
+            } else {
+                alert('無効なコードです。13桁のEAN-13コードを指定してください。');
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>EAN-13バーコード生成</h1>
+    <svg id="barcode"></svg>
+</body>
+</html>
