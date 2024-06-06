@@ -14,12 +14,39 @@
             return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
         }
 
+        // 入力をサニタイズする関数
+        function sanitize(input) {
+            var element = document.createElement('div');
+            element.innerText = input;
+            return element.innerHTML;
+        }
+
+        // EAN-13コードのフォーマットとチェックディジットを検証する関数
+        function isValidEAN13(code) {
+            if (code.length !== 13 || isNaN(code)) {
+                return false;
+            }
+
+            var sum = 0;
+            for (var i = 0; i < 12; i++) {
+                var digit = parseInt(code.charAt(i));
+                if (i % 2 === 0) {
+                    sum += digit;
+                } else {
+                    sum += digit * 3;
+                }
+            }
+
+            var checkDigit = (10 - (sum % 10)) % 10;
+            return checkDigit === parseInt(code.charAt(12));
+        }
+
         window.onload = function() {
             // URLからコードを取得
-            var ean13Code = getUrlParameter('code');
+            var ean13Code = sanitize(getUrlParameter('code'));
 
-            // コードが有効な長さかどうかを確認 (EAN-13は13桁)
-            if (ean13Code.length === 13 && !isNaN(ean13Code)) {
+            // コードが有効かどうかを確認
+            if (isValidEAN13(ean13Code)) {
                 // JsBarcodeを使用してバーコードを生成
                 JsBarcode("#barcode", ean13Code, {
                     format: "EAN13",
